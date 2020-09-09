@@ -16,14 +16,13 @@ function makeResponsive() {
 
     var margin = {
     top: 20,
-    right: 40,
-    bottom: 60,
-    left: 100
+    right: 80,
+    bottom: 0,
+    left: 90
     };
 
-    var width = svgWidth - margin.left - margin.right;
-    var height = svgHeight - margin.top - margin.bottom;
-    console.log(`Width: ${width}, Height: ${height}`)
+    var width = svgWidth - margin.left - margin.right-100;
+    var height = svgHeight - margin.top - margin.bottom-100;
 
     // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
     var svg = d3.select("#scatter")
@@ -47,11 +46,11 @@ function makeResponsive() {
         // Create scale functions
         
         var xLinearScale = d3.scaleLinear()
-        .domain([2, d3.max(data, d => d.healthcare)])
+        .domain([8, d3.max(data, d => d.poverty)])
         .range([0, width]);
 
         var yLinearScale = d3.scaleLinear()
-        .domain([8, d3.max(data, d => d.poverty)])
+        .domain([2, d3.max(data, d => d.healthcare)])
         .range([height, 0]);
 
         // Create axis functions
@@ -74,8 +73,8 @@ function makeResponsive() {
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", d => xLinearScale(d.healthcare))
-        .attr("cy", d => yLinearScale(d.poverty))
+        .attr("cx", d => xLinearScale(d.poverty))
+        .attr("cy", d => yLinearScale(d.healthcare))
         .attr("r", "15")
         .attr("fill", "#50BBC0")
         .attr("opacity", ".75");
@@ -85,8 +84,8 @@ function makeResponsive() {
         .data(data)
         .enter()
         .append("text")
-        .attr("x", d => xLinearScale(d.healthcare))
-        .attr("y", d => yLinearScale(d.poverty))
+        .attr("x", d => xLinearScale(d.poverty))
+        .attr("y", d => yLinearScale(d.healthcare))
         .attr('text-anchor', 'middle')
         .attr('alignment-baseline', 'middle')
         .attr('fill', 'white')
@@ -98,7 +97,7 @@ function makeResponsive() {
         .attr("class", "tooltip")
         .offset([80, -60])
         .html(function(data, index) {
-            return (`${data.state}<br>Healthcare: ${data.healthcare}<br>Poverty: ${data.poverty}`);
+            return (`${data.state}<br>Poverty: ${data.poverty}%<br>Healthcare: ${data.healthcare}%`);
         });
         
         // Create tooltip in the chart
@@ -129,12 +128,12 @@ function makeResponsive() {
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .attr("class", "axisText")
-        .text("In Poverty (%)");
+        .text("Lacks Healthcare (%)");
 
         chartGroup.append("text")
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
         .attr("class", "axisText")
-        .text("Lacks Healthcare (%)");
+        .text("In Poverty (%)");
     }).catch(function(error) {
         console.log(error);
     });
